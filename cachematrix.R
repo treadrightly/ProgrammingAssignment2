@@ -34,9 +34,11 @@ unitTestCase <- function() {
   x <- matrix(c(4,2,7,6), nrow=2, ncol=2)
   y <- makeCacheMatrix(x)
   z <- cacheSolve(y)
-  cat(z)
+  print(z)
   z <- cacheSolve(y)
-  cat(z)
+  print(z)
+  m = x %*% z
+  print(m)
 }
 
 #unitTestCase()
