@@ -5,9 +5,14 @@ makeCacheMatrix <- function(x = matrix()) {
   set <- function(y) {
     # if set() is called, assume that the original matrix is updated
     # and invalidate the cache
-    x <<- y
-    message("updating original matrix, cache flushed")
-    i <<- NULL
+    if(identical(x, y) == FALSE) {
+      x <<- y
+      message("updating original matrix, cache flushed")
+      i <<- NULL
+    }
+    else {
+      message("new matrix is same as old, ignoring")
+    }
   }
   get <- function() x
   setInverse <- function(solve) i <<- solve
@@ -41,6 +46,8 @@ unitTestCase <- function() {
   print(z)
   m <- x %*% z
   print(m)
+  y$set(x)
+  z <- cacheSolve(y)
   y$set(matrix(c(3,2,7,6), nrow=2, ncol=2))
   z <- cacheSolve(y)
   print(z)
@@ -49,4 +56,4 @@ unitTestCase <- function() {
 }
 
 # uncomment test case and source file to run
-# unitTestCase()
+ unitTestCase()
