@@ -16,8 +16,17 @@ makeCacheMatrix <- function(x = matrix()) {
 # returned by makeCacheMatrix above. If the inverse has already been calculated
 # (and the matrix has not changed), then the cachesolve should retrieve the 
 # inverse from the cache.
-
-cacheSolve <- function(x, ...) {
+# input param x: the output of makeCacheMatrix()
+# input param y: the matrix whose inverse is to be computed (ideally, should be same as x$get())
+# the function internally checks if x$get() is identical to y
+# if not identical, then the cache is cleared and the inverse recomputed
+# no error checking is done - e.g., check if x is actually a structure output from
+# makeCacheMatrix etc.
+cacheSolve <- function(x, y, ...) {
+  if(identical(x$get(), y) == FALSE) {
+    message("x$get() and y are different, clearing cache")
+    x$setInverse(NULL)
+  }
   ## Return a matrix that is the inverse of 'x'
   i <- x$getInverse()
   if(!is.null(i)) {
@@ -33,11 +42,16 @@ cacheSolve <- function(x, ...) {
 unitTestCase <- function() {
   x <- matrix(c(4,2,7,6), nrow=2, ncol=2)
   y <- makeCacheMatrix(x)
-  z <- cacheSolve(y)
+  z <- cacheSolve(y, x)
   print(z)
-  z <- cacheSolve(y)
+  z <- cacheSolve(y, x)
   print(z)
   m = x %*% z
+  print(m)
+  y$set(matrix(c(3,2,7,6), nrow=2, ncol=2))
+  z <- cacheSolve(y, x)
+  print(z)
+  m = y$get() %*% z
   print(m)
 }
 
